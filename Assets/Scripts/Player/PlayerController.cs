@@ -99,5 +99,8 @@ public class PlayerController : MonoBehaviour, PlayerInput.ICharacterActions
 
     }
 
-
+    public void OnCrouch(InputAction.CallbackContext context)
+    {
+        throw new NotImplementedException();
+    }
 }

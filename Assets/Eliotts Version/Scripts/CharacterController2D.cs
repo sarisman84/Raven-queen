@@ -30,6 +30,22 @@ public class CharacterController2D : MonoBehaviour
 	public BoolEvent OnCrouchEvent;
 	private bool m_wasCrouching = false;
 
+
+
+	//Spyro's stuff
+
+	public Vector3 FacingDirection {
+		get {
+			if(m_FacingRight){
+				return transform.right;
+			}
+			if(!m_FacingRight){
+				return -transform.right;
+			}
+			return Vector3.zero;
+		}
+	}
+
 	private void Awake()
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();

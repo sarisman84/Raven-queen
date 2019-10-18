@@ -103,4 +103,9 @@ public class PlayerController : MonoBehaviour, PlayerInput.ICharacterActions
     {
         throw new NotImplementedException();
     }
+
+    public void OnFire(InputAction.CallbackContext context)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -142,6 +142,17 @@ public class PlayerInput : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""bd729b48-8efe-4916-bd4d-92b31a608a84"",
+                    ""path"": ""<Keyboard>/leftAlt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""cc6f4c1d-9f61-46c1-8402-7e688d6a6e33"",
                     ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",

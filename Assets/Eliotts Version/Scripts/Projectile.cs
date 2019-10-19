@@ -16,11 +16,7 @@ public class Projectile : MonoBehaviour {
     //Spyro's stuff
     Rigidbody2D physics2D;
     Vector2 fireDir;
-    public Vector2 SetFireDirection {
-        set {
-            fireDir = value;
-        }
-    }
+   
     float counter;
 
     private void OnEnable () {
@@ -30,21 +26,11 @@ public class Projectile : MonoBehaviour {
     private void Update () {
         counter += Time.deltaTime;
         if (counter >= lifeTime) {
+            physics2D.velocity = Vector2.zero;
             gameObject.SetActive (false);
         }
     }
     private void FixedUpdate () {
-
-        // RaycastHit2D hitinfo = Physics2D.Raycast(transform.position, transform.up, distance, whatisSolid);
-        // if (hitinfo.collider != null)
-        // {
-        //     if (hitinfo.collider.CompareTag("Enemy"))
-        //     {
-        //         hitinfo.collider.GetComponent<Enemy>().TakeDamage(damage);
-        //     }
-        //     DestroyProjectile();
-        // }
-        // transform.Translate(transform.up * speed * Time.deltaTime);
         physics2D.velocity += fireDir.normalized * speed;
 
     }
@@ -62,8 +48,9 @@ public class Projectile : MonoBehaviour {
 
     }
 
-    internal void OnAttack (Transform barrelPos) {
-
+    public void OnAttack (Transform barrelPos, Vector3 dir) {
+        physics2D.velocity = Vector2.zero;
         transform.position = barrelPos.position;
+        fireDir = dir;
     }
 }

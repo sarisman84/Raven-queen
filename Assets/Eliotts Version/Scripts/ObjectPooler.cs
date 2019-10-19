@@ -8,9 +8,9 @@ public static class ObjectPooler {
         List<GameObject> pooledObjects = new List<GameObject> ();
         for (int i = 0; i < amount; i++) {
             GameObject clone = MonoBehaviour.Instantiate (prefab, parent);
-
-            pooledObjects.Add (clone);
             clone.SetActive (false);
+            pooledObjects.Add (clone);
+            
         }
         listOfListOfPooledObjects.Add (pooledObjects);
     }

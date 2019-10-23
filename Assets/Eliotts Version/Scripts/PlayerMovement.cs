@@ -99,7 +99,8 @@ public class PlayerMovement : MonoBehaviour, PlayerInput.ICharacterActions, IPla
         Debug.DrawRay(transform.position, controller.GetFacingDirection(transform) * 10, Color.red);
         
         
-        animator.SetFloat("Moving", Mathf.Abs(horizontalMove/10));
+        animator.SetFloat("Horizontal Vel", Mathf.Abs(horizontalMove/10));
+        animator.SetFloat("Vertical Vel", GetComponent<Rigidbody2D>().velocity.y);
 
     }
 
@@ -116,12 +117,7 @@ public class PlayerMovement : MonoBehaviour, PlayerInput.ICharacterActions, IPla
         horizontalMove = context.ReadValue<float>() * movementAndCollisionInfo.runSpeed;
         Debug.Log(horizontalMove);
 
-        if(context.performed){
-            animator.SetBool("IsMoving", true);
-        }
-        if(context.canceled){
-            animator.SetBool("IsMoving", false);
-        }
+        
     }
 
     public void OnJump(InputAction.CallbackContext context)

@@ -24,19 +24,16 @@ public class PlayerMovement : MonoBehaviour, PlayerInput.ICharacterActions, IPla
         public float runSpeed = 40f;
     }
 
-    [SerializeField] ControllerInfo movementAndCollisionInfo;
+    [SerializeField] ControllerInfo movementAndCollisionInfo; //Reference to the class above.
 
     //Eliotts stuff
-    CharacterController2D<PlayerMovement> controller;
+    CharacterController2D<PlayerMovement> controller; //Reference to the CharacterController2D module.
     [Space] public Animator animator;
     float horizontalMove = 0f;
 
-    bool jump = false;
-    bool crouch = false;
-
     // Spyro´s stuff.
-    PlayerInput playerInput;
-    float counter;
+    PlayerInput playerInput; //Reference to the InputSystem
+    float counter; //Counter variable used in a time logic.
     public float fireRate = 0.4f;
 
     [Header("Weapon Variables")]
@@ -77,7 +74,7 @@ public class PlayerMovement : MonoBehaviour, PlayerInput.ICharacterActions, IPla
     }
     private void OnEnable()
     {
-        controller = controller ?? new CharacterController2D<PlayerMovement>(this);
+        controller = controller ?? new CharacterController2D<PlayerMovement>(this, animator);
         playerInput = playerInput ?? new PlayerInput();
         playerInput.Character.SetCallbacks(this);
         playerInput.Enable();
@@ -90,44 +87,40 @@ public class PlayerMovement : MonoBehaviour, PlayerInput.ICharacterActions, IPla
         playerInput.Disable();
     }
 
-    // Update is called once per frame
+   
     void Update()
     {
 
-        //animator.SetFloat("Blend", horizontalMove);
+        
         counter = (counter <= fireRate) ? counter + Time.deltaTime : fireRate;
+        controller.UpdateAnimations();
         Debug.DrawRay(transform.position, controller.GetFacingDirection(transform) * 10, Color.red);
-        
-        
-        animator.SetFloat("Horizontal Vel", Mathf.Abs(horizontalMove/10));
-        animator.SetFloat("Vertical Vel", GetComponent<Rigidbody2D>().velocity.y);
-
     }
 
     private void FixedUpdate()
     {
-        controller.Move(GetComponent<Rigidbody2D>(), horizontalMove * Time.fixedDeltaTime, crouch, jump);
+        controller.Move(horizontalMove * Time.fixedDeltaTime);
         controller.UpdateGroundCheck();
-        jump = false;
+        controller.HasJumped = false;
 
     }
 
     public void OnHorizontalMovement(InputAction.CallbackContext context)
     {
         horizontalMove = context.ReadValue<float>() * movementAndCollisionInfo.runSpeed;
-        Debug.Log(horizontalMove);
-
         
+
+
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        Debug.Log($"Can you jump? {jump}");
-        if (context.performed && jump != true)
+        Debug.Log($"Can you jump? {controller.HasJumped}");
+        if (context.performed && controller.HasJumped != true)
         {
 
-            animator.SetTrigger("Jump");
-            jump = true;
+            
+            controller.HasJumped = true;
         }
     }
 
@@ -135,14 +128,14 @@ public class PlayerMovement : MonoBehaviour, PlayerInput.ICharacterActions, IPla
     {
         if (context.performed)
         {
-            animator.SetBool("Crouch", true);
-            crouch = true;
+            Debug.Log("Is Crouching");
+            controller.IsCrouching = true;
 
         }
         else if (context.canceled)
         {
-            animator.SetBool("Crouch", false);
-            crouch = false;
+            Debug.Log("Is not crouching");
+            controller.IsCrouching = false;
         }
     }
 

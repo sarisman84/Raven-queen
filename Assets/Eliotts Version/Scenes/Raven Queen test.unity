@@ -192,7 +192,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 224110509010180466, guid: 6d8b270c394c1d048bd03346d75b1df0, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6d8b270c394c1d048bd03346d75b1df0, type: 3}
 --- !u!1 &109539415
 GameObject:
@@ -729,16 +730,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Running (with model)
       objectReference: {fileID: 0}
-    - target: {fileID: -6057140222963153312, guid: d3bc59fda52b06947b23d380f3a4a331,
-        type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 550899b33f0531b45904e64b4a429add, type: 2}
-    - target: {fileID: -6057140222963153312, guid: d3bc59fda52b06947b23d380f3a4a331,
-        type: 3}
-      propertyPath: m_WarningMessage
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: d3bc59fda52b06947b23d380f3a4a331,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -793,6 +784,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6057140222963153312, guid: d3bc59fda52b06947b23d380f3a4a331,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 550899b33f0531b45904e64b4a429add, type: 2}
+    - target: {fileID: -6057140222963153312, guid: d3bc59fda52b06947b23d380f3a4a331,
+        type: 3}
+      propertyPath: m_WarningMessage
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d3bc59fda52b06947b23d380f3a4a331, type: 3}

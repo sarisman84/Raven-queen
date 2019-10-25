@@ -428,7 +428,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_firstOverflowCharacterIndex: -1
@@ -1954,8 +1954,9 @@ MonoBehaviour:
   jumpHeight: 4
   jumpSpeed: 0.4
   accelerationTimeAirborne: 0.2
-  accelerationTimeGrounded: 0.1
-  movementSmoothing: 1
+  accelerationTimeGrounded: 1
+  slideSpeedLimit: 0.3
+  movementSmoothing: 0
   airborneControl: 1
   usingRangedWeapon: 1
   barrelTransform: {fileID: 1751021105}
@@ -2817,6 +2818,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Running (with model)
       objectReference: {fileID: 0}
+    - target: {fileID: -6057140222963153312, guid: d3bc59fda52b06947b23d380f3a4a331,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 550899b33f0531b45904e64b4a429add, type: 2}
     - target: {fileID: -4216859302048453862, guid: d3bc59fda52b06947b23d380f3a4a331,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2872,11 +2878,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -6057140222963153312, guid: d3bc59fda52b06947b23d380f3a4a331,
-        type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 550899b33f0531b45904e64b4a429add, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d3bc59fda52b06947b23d380f3a4a331, type: 3}
 --- !u!1 &1360177986

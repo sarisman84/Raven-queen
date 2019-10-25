@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour, PlayerInput.ICharacterActions, IPla
     [SerializeField] ControllerInfo movementAndCollisionInfo; //Reference to the class above.
 
     //Eliotts stuff
-    CharacterController2D<PlayerMovement> controller; //Reference to the CharacterController2D module.
+    //CharacterController2D<PlayerMovement> controller; //Reference to the CharacterController2D module.
     [Space] public Animator animator;
     float horizontalMove = 0f;
 
@@ -74,7 +74,7 @@ public class PlayerMovement : MonoBehaviour, PlayerInput.ICharacterActions, IPla
     }
     private void OnEnable()
     {
-        controller = controller ?? new CharacterController2D<PlayerMovement>(this, animator);
+        //controller = controller ?? new CharacterController2D<PlayerMovement>(this, animator);
         playerInput = playerInput ?? new PlayerInput();
         playerInput.Character.SetCallbacks(this);
         playerInput.Enable();
@@ -93,15 +93,15 @@ public class PlayerMovement : MonoBehaviour, PlayerInput.ICharacterActions, IPla
 
         
         counter = (counter <= fireRate) ? counter + Time.deltaTime : fireRate;
-        controller.UpdateAnimations();
-        Debug.DrawRay(transform.position, controller.GetFacingDirection(transform) * 10, Color.red);
+        //controller.UpdateAnimations();
+        //Debug.DrawRay(transform.position, controller.GetFacingDirection(transform) * 10, Color.red);
     }
 
     private void FixedUpdate()
     {
-        controller.Move(horizontalMove * Time.fixedDeltaTime);
-        controller.UpdateGroundCheck();
-        controller.HasJumped = false;
+        //controller.Move(horizontalMove * Time.fixedDeltaTime);
+        //controller.UpdateGroundCheck();
+        //controller.HasJumped = false;
 
     }
 
@@ -115,28 +115,28 @@ public class PlayerMovement : MonoBehaviour, PlayerInput.ICharacterActions, IPla
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        Debug.Log($"Can you jump? {controller.HasJumped}");
-        if (context.performed && controller.HasJumped != true)
-        {
+        // Debug.Log($"Can you jump? {controller.HasJumped}");
+        // if (context.performed && controller.HasJumped != true)
+        // {
 
             
-            controller.HasJumped = true;
-        }
+        //     controller.HasJumped = true;
+        // }
     }
 
     public void OnCrouch(InputAction.CallbackContext context)
     {
-        if (context.performed)
-        {
-            Debug.Log("Is Crouching");
-            controller.IsCrouching = true;
+        // if (context.performed)
+        // {
+        //     Debug.Log("Is Crouching");
+        //     controller.IsCrouching = true;
 
-        }
-        else if (context.canceled)
-        {
-            Debug.Log("Is not crouching");
-            controller.IsCrouching = false;
-        }
+        // }
+        // else if (context.canceled)
+        // {
+        //     Debug.Log("Is not crouching");
+        //     controller.IsCrouching = false;
+        // }
     }
 
     public void OnFire(InputAction.CallbackContext context)
@@ -154,7 +154,7 @@ public class PlayerMovement : MonoBehaviour, PlayerInput.ICharacterActions, IPla
 
         Projectile newProjectile = ObjectPooler.GetPooledObject<Projectile>();
         newProjectile.gameObject.SetActive(true);
-        newProjectile.OnAttack(barrelPos, controller.GetFacingDirection(transform));
+        //newProjectile.OnAttack(barrelPos, controller.GetFacingDirection(transform));
         counter = 0;
     }
 }

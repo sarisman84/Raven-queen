@@ -16,8 +16,8 @@ public class InformationReference : MonoBehaviour
         crouch.text = $"Is Crouching: {((playerInformation.PlayerCrouchInput) ? "yes" : "no")}";
         jump.text = $"Has Jumped: {((playerInformation.PlayerJumpInput) ? "yes" : "no")}";
         grounded.text = $"Is grounded:{playerInformation.collisions.below} ";
-        slope.text = $"Is on a slope: {((playerInformation.collisions.climbingSlope || playerInformation.collisions.decendingSlope))}";
-        firing.text = $"Is firing: {playerInformation.PlayerFiringInput}";
+        slope.text = $"Is moving on a slope: {((playerInformation.collisions.climbingSlope || playerInformation.collisions.decendingSlope))}";
+        firing.text = $"Is attacking: {playerInformation.PlayerFiringInput}";
     }
 
 

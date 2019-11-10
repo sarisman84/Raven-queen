@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class CharacterController2D : RaycastController
 {
-    float maxClimbAngle = 80, maxDescendAngle = 75;
+    public float maxClimbAngle = 80, maxDescendAngle = 75;
     protected override void Start()
     {
         base.Start();
@@ -55,7 +55,8 @@ public class CharacterController2D : RaycastController
             if (hit)
             {
 
-                if(hit.distance == 0){
+                if (hit.distance == 0)
+                {
                     continue;
                 }
                 float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
@@ -113,7 +114,7 @@ public class CharacterController2D : RaycastController
 
 
             Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
-
+            
             if (hit)
             {
                 velocity.y = (hit.distance - skinWidth) * directionY;

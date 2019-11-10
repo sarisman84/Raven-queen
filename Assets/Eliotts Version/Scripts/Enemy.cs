@@ -11,8 +11,15 @@ public class Enemy : MonoBehaviour
 
     private Animator anim;
 
+    public Color hitEffect;
+    Color defaultMaterialColor, currentColor;
+    float t;
+
     void Start()
     {
+        defaultMaterialColor = GetComponent<MeshRenderer>().material.color;
+        currentColor = defaultMaterialColor;
+
         //anim = GetComponent<Animator>();
         //anim.SetBool("isrunning", true);
     }
@@ -22,18 +29,22 @@ public class Enemy : MonoBehaviour
     {
         if (dazedTime <= 0)
         {
-            speed = 1;
+            GetComponent<PlatformController>().speed = 1;
         }
         else
         {
-            speed = 0;
+            GetComponent<PlatformController>().speed = 0;
             dazedTime -= Time.deltaTime;
         }
         if (health <= 0)
         {
             Destroy(gameObject);
         }
-        transform.Translate(Vector2.left * speed * Time.deltaTime);
+        
+        currentColor = Color.Lerp(defaultMaterialColor, hitEffect, t);
+        GetComponent<MeshRenderer>().material.color = currentColor;
+        t -= Time.deltaTime;
+        t = Mathf.Clamp01(t);
     }
 
     public void TakeDamage(int damage)
@@ -41,5 +52,6 @@ public class Enemy : MonoBehaviour
         dazedTime = startDazedTime;
         health -= damage;
         Debug.Log("damage TAKEN");
+        t = 1;
     }
 }

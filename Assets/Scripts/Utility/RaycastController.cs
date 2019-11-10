@@ -54,6 +54,15 @@ public class RaycastController : MonoBehaviour
             CalculateRaySpacing();
             return;
         }
+        collisions.above = Physics2D.Raycast(raycastOrigins.topLeft, Vector2.up * Mathf.Sign(1), 1 + skinWidth, collisionMask) || Physics2D.Raycast(raycastOrigins.topRight, Vector2.up * Mathf.Sign(1), 1 + skinWidth, collisionMask);
+
+
+        if (collisions.above)
+        {
+            Debug.DrawRay(raycastOrigins.topLeft, Vector2.up * Mathf.Sign(1), Color.green);
+            Debug.DrawRay(raycastOrigins.topRight, Vector2.up * Mathf.Sign(1), Color.green);
+            return;
+        }
         crouchCollider.enabled = false;
         defaultCollider.enabled = true;
         col = defaultCollider;

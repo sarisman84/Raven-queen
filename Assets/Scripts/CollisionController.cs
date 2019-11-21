@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Collision2DController {
+public class Collisions2D {
 
     public const float skinWidth = .015f;
     protected RaycastOrigins raycastOrigins;
@@ -14,7 +14,7 @@ public class Collision2DController {
 
     protected float horizontalRaySpacing, verticalRaySpacing;
 
-    public Collision2DController (Collider2D _col) {
+    public Collisions2D (Collider2D _col) {
         col = _col;
         CalculateRaySpacing (horizontalRayCount, verticalRayCount);
     }

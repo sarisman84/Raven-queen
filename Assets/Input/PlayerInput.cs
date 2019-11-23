@@ -49,6 +49,14 @@ public class PlayerInput : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Sprint"",
+                    ""type"": ""Button"",
+                    ""id"": ""30714bbb-5381-4f63-aee7-8ba8c0934e04"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -172,6 +180,17 @@ public class PlayerInput : IInputActionCollection, IDisposable
                     ""action"": ""Fire"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f3f210d4-c2cc-44da-8d2c-bd0e6b8165a9"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -201,6 +220,7 @@ public class PlayerInput : IInputActionCollection, IDisposable
         m_Character_Jump = m_Character.FindAction("Jump", throwIfNotFound: true);
         m_Character_Crouch = m_Character.FindAction("Crouch", throwIfNotFound: true);
         m_Character_Fire = m_Character.FindAction("Fire", throwIfNotFound: true);
+        m_Character_Sprint = m_Character.FindAction("Sprint", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -254,6 +274,7 @@ public class PlayerInput : IInputActionCollection, IDisposable
     private readonly InputAction m_Character_Jump;
     private readonly InputAction m_Character_Crouch;
     private readonly InputAction m_Character_Fire;
+    private readonly InputAction m_Character_Sprint;
     public struct CharacterActions
     {
         private PlayerInput m_Wrapper;
@@ -262,6 +283,7 @@ public class PlayerInput : IInputActionCollection, IDisposable
         public InputAction @Jump => m_Wrapper.m_Character_Jump;
         public InputAction @Crouch => m_Wrapper.m_Character_Crouch;
         public InputAction @Fire => m_Wrapper.m_Character_Fire;
+        public InputAction @Sprint => m_Wrapper.m_Character_Sprint;
         public InputActionMap Get() { return m_Wrapper.m_Character; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -283,6 +305,9 @@ public class PlayerInput : IInputActionCollection, IDisposable
                 Fire.started -= m_Wrapper.m_CharacterActionsCallbackInterface.OnFire;
                 Fire.performed -= m_Wrapper.m_CharacterActionsCallbackInterface.OnFire;
                 Fire.canceled -= m_Wrapper.m_CharacterActionsCallbackInterface.OnFire;
+                Sprint.started -= m_Wrapper.m_CharacterActionsCallbackInterface.OnSprint;
+                Sprint.performed -= m_Wrapper.m_CharacterActionsCallbackInterface.OnSprint;
+                Sprint.canceled -= m_Wrapper.m_CharacterActionsCallbackInterface.OnSprint;
             }
             m_Wrapper.m_CharacterActionsCallbackInterface = instance;
             if (instance != null)
@@ -299,6 +324,9 @@ public class PlayerInput : IInputActionCollection, IDisposable
                 Fire.started += instance.OnFire;
                 Fire.performed += instance.OnFire;
                 Fire.canceled += instance.OnFire;
+                Sprint.started += instance.OnSprint;
+                Sprint.performed += instance.OnSprint;
+                Sprint.canceled += instance.OnSprint;
             }
         }
     }
@@ -327,5 +355,6 @@ public class PlayerInput : IInputActionCollection, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
+        void OnSprint(InputAction.CallbackContext context);
     }
 }

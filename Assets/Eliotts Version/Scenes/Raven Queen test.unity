@@ -677,7 +677,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_LookaheadTime: 0.375
   m_LookaheadSmoothing: 10
-  m_LookaheadIgnoreY: 0
+  m_LookaheadIgnoreY: 1
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -1427,20 +1427,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 5
-  entityInfo:
+  characterInfo:
     maxClimbAngle: 80
     maxDecendAngle: 75
     horizontalRayCount: 4
-    verticalRayCount: 2
+    verticalRayCount: 4
     collisionMask:
       serializedVersion: 2
       m_Bits: 1
-    useGravity: 1
-    gravity: 0
-  characterInfo:
-    accelerationTimeOnGround: 0.1
-    accelerationTimeWhileAirborne: 0.2
+    useGravity: 0
+    gravity: -0.03
     airborneControl: 1
+    movementSpeed: 4
+    sprintSpeed: 8
+    crouchSpeed: 2
+    crouchLevel: 0
+    jumpHeight: 4
+    timeToJumpApex: 0.4
+    accelerationTimeOnGround: 0
+    accelerationTimeWhileAirborne: 0
 --- !u!61 &1271099334
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1454,7 +1459,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.1}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -1465,7 +1470,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 0.2}
   m_EdgeRadius: 0
 --- !u!23 &1271099335
 MeshRenderer:
@@ -1474,7 +1479,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1271099332}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

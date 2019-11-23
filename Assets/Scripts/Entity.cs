@@ -21,7 +21,7 @@ public class Entity : Collisions2D
             collisionMask = info.collisionMask;
             maxClimbAngle = info.maxClimbAngle;
             maxDecendAngle = info.maxDecendAngle;
-            gravity = info.gravity == 0 ? info.customGravity() : info.gravity;
+            gravity = info.gravity;
         }
     }
 
@@ -38,7 +38,8 @@ public class Entity : Collisions2D
     //     print($"Gravity {gravity}, Jump Force: {jumpForce}");
     // }
 
-    protected void MoveEntity(Vector2 _velocity, bool standingOnPlatform = false)
+
+    public void MoveEntity(Vector2 _velocity, bool useGravity, bool standingOnPlatform = false)
     {
         if (useGravity)
         {
@@ -48,9 +49,13 @@ public class Entity : Collisions2D
                 _velocity.y = 0;
             }
             _velocity.y += gravity * Time.deltaTime;
-            Debug.Log(velocity.y += gravity * Time.deltaTime);
 
         }
+        MoveEntity(_velocity);
+    }
+    public void MoveEntity(Vector2 _velocity, bool standingOnPlatform = false)
+    {
+
 
         MoveEntity(ref _velocity);
         if (standingOnPlatform)
@@ -59,7 +64,7 @@ public class Entity : Collisions2D
         }
     }
 
-    public void MoveEntity(ref Vector2 _velocity)
+    protected void MoveEntity(ref Vector2 _velocity)
     {
         _velocity *= Time.deltaTime;
         Debug.Log(_velocity);
@@ -247,15 +252,21 @@ public delegate float CalculateJumpForce(float gravity, float jumpSpeed = 1);
 [System.Serializable]
 public class EntityInfo
 {
-    public float maxClimbAngle = 80, maxDecendAngle = 75;
-    public int horizontalRayCount, verticalRayCount;
+    [Header("Climbable Slope Degrees")]
+    public float maxClimbAngle = 80;
+    public float maxDecendAngle = 75;
 
+    [Header("Collision Checks")]
+    [Space]
+
+    [Range(2, 100)] public int horizontalRayCount;
+    [Range(2, 100)] public int verticalRayCount;
     public LayerMask collisionMask;
 
+    [Header("Gravity Variables")]
+    [Space]
     public bool useGravity;
     public float gravity;
 
-    public CalculateGravity customGravity;
-    public CalculateJumpForce customVerticalForce;
 }
 

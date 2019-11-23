@@ -11,22 +11,22 @@ public class Player : MonoBehaviour
     CharacterController2D characterController2D;
 
     public float movementSpeed;
-    public EntityInfo entityInfo;
-    public CharacterInfo characterInfo;
+
+    public CharacterInfo2D characterInfo;
 
     private void Awake()
     {
         inputActions = new PlayerInput();
         input = new P_Input(inputActions);
-        entityInfo.customGravity = (float jumpHeight, float jumpSpeed) => { return -(2 * jumpHeight) / Mathf.Pow(jumpSpeed, 2); };
-        characterController2D = new CharacterController2D(GetComponent<BoxCollider2D>(), transform, entityInfo);
+        characterController2D = new CharacterController2D(GetComponent<BoxCollider2D>(), transform, characterInfo);
 
 
     }
 
     private void Update()
     {
-        characterController2D.MoveCharacter(input.PlayerInput2D * movementSpeed, characterInfo);
+        characterController2D.MoveCharacter(input.PlayerInput2D, input.JumpInput, input.SprintInput);
+        Debug.Log(input.JumpInput);
 
     }
 
@@ -52,7 +52,8 @@ public class P_Input : PlayerInput.ICharacterActions
     public bool AttackInput => isAttacking;
     public bool JumpInput => isJumping;
     public bool CrouchInput => isCrouching;
-    bool isAttacking, isJumping, isCrouching;
+    public bool SprintInput => isSprinting;
+    bool isAttacking, isJumping, isCrouching, isSprinting;
 
 
     public P_Input(PlayerInput input)
@@ -82,6 +83,10 @@ public class P_Input : PlayerInput.ICharacterActions
     {
         isJumping = context.performed;
     }
+    public void OnSprint(InputAction.CallbackContext context)
+    {
+        isSprinting = context.performed;
+    }
 
     public void ChangeState(bool isActive, PlayerInput input)
     {
@@ -92,5 +97,6 @@ public class P_Input : PlayerInput.ICharacterActions
         }
         input.Disable();
     }
+
 
 }

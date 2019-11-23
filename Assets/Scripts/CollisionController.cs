@@ -10,7 +10,7 @@ public class Collisions2D {
     protected LayerMask collisionMask;
     protected int horizontalRayCount, verticalRayCount;
 
-    Collider2D col;
+    protected Collider2D col;
 
     protected float horizontalRaySpacing, verticalRaySpacing;
 

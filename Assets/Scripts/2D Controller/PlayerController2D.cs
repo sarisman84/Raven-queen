@@ -1,10 +1,14 @@
-﻿using System;
+﻿using System.Drawing;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 enum InputControl { Active, Disable }
+public enum FacingDirection { Left, Right }
+
 public class PlayerController2D : EntityController2D
 {
     [Header("Horizontal Movement")]
@@ -34,7 +38,19 @@ public class PlayerController2D : EntityController2D
     public float maxDecendAngle = 70f;
 
 
-    public InputAction horizontalInput, jumpInput, crouchInput;
+    [Header("Player Input")]
+    public InputAction horizontalInput;
+    public InputAction jumpInput, crouchInput;
+
+    [Header("Player Model")]
+    public Transform playerModel;
+
+    float CalculateGravity => -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
+    float CalculateJumpVelocity => Mathf.Abs(gravity) * timeToJumpApex;
+
+    FacingDirection direction;
+    public FacingDirection CurrentFacingDirection => direction;
+
 
 
     protected Vector2 vel;
@@ -45,6 +61,8 @@ public class PlayerController2D : EntityController2D
     private Vector2 defaultSize;
     private Vector2 defaultOffset;
 
+    private Animator animatorController;
+
     protected override void Awake()
     {
         base.Awake();
@@ -53,6 +71,8 @@ public class PlayerController2D : EntityController2D
 
         defaultSize = boxCollider2D.size;
         defaultOffset = boxCollider2D.offset;
+        animatorController = playerModel.GetComponent<Animator>();
+
     }
 
     private void OnValidate()
@@ -107,33 +127,69 @@ public class PlayerController2D : EntityController2D
         CrouchAndSlidingDefinitions(ref targetVelocityX, ref desiredAccelerationTimeGrounded);
 
         vel.x = Mathf.SmoothDamp(vel.x, targetVelocityX, ref velocityXSmoothing, (IsGrounded) ? desiredAccelerationTimeGrounded : accelerationTimeAirborne);
-        if (IsGrounded || IsCollidingAbove) vel.y = 0;
 
-        if (jumpInput.ReadValue<float>() == 1 && IsGrounded) vel.y = jumpVelocity;
+        //Change Facing Direction
+        direction = ChangeFacingDirection();
+        SetAnimationVariables();
+
+        if (IsGrounded || IsCollidingAbove) vel.y = 0;
+        Jump();
         vel.y += gravity * Time.deltaTime;
         Move(vel * Time.deltaTime);
+    }
+
+    private void SetAnimationVariables()
+    {
+        animatorController.SetFloat("VelocityX", Mathf.Abs(vel.x));
+        animatorController.SetFloat("VelocityY", vel.y);
+        animatorController.SetBool("IsGrounded", IsGrounded);
+        animatorController.SetBool("Slide", isSliding);
+        animatorController.SetBool("Crouch", isCrouching);
+    }
+
+    private void Jump()
+    {
+        if (jumpInput.ReadValue<float>() == 1 && IsGrounded)
+        {
+            vel.y = jumpVelocity;
+            animatorController.SetTrigger("Jump");
+        }
+    }
+
+    private FacingDirection ChangeFacingDirection()
+    {
+        Vector2 size = transform.localScale;
+        size.x = Mathf.Sign(vel.x);
+        Debug.Log(Mathf.Sign(vel.x));
+        transform.localScale = size;
+        return (Mathf.Sign(vel.x) == -1) ? FacingDirection.Left : FacingDirection.Right;
     }
 
     private void CrouchAndSlidingDefinitions(ref float targetVelocityX, ref float desiredAccelerationTimeGrounded)
     {
         Slide(ref targetVelocityX, ref desiredAccelerationTimeGrounded);
         ChangeCollisionSize(false);
+
+        //Updating Hitbox size when either sliding or crouching
         if (crouchInput.ReadValue<float>() == 1 || isSliding)
         {
             ChangeCollisionSize(true);
         }
+
         Crouch(ref targetVelocityX, ref desiredAccelerationTimeGrounded);
     }
 
     private void Crouch(ref float targetVelocityX, ref float desiredAccelerationTimeGrounded)
     {
         isCrouching = false;
+        //If the player is not fast enough, is on a surface and has pressed the crouch button; Crouch.
         if (Mathf.Abs(vel.x) < slideTrigger && IsGrounded && crouchInput.ReadValue<float>() == 1)
         {
             targetVelocityX = (IsGrounded || airborneControl) ? horizontalInput.ReadValue<float>() * moveSpeed * crouchSpeedMultiplier : vel.x;
             desiredAccelerationTimeGrounded = accelerationTimeGrounded / 2f;
             isCrouching = true;
         }
+
     }
 
     private void Slide(ref float targetVelocityX, ref float desiredAccelerationTimeGrounded)
@@ -146,6 +202,8 @@ public class PlayerController2D : EntityController2D
             targetVelocityX -= slidingRate * Mathf.Sign(vel.x);
             isSliding = true;
         }
+
+
     }
 
     private void ChangeCollisionSize(bool smaller)
@@ -153,13 +211,14 @@ public class PlayerController2D : EntityController2D
 
         if (!smaller)
         {
+            if (boxCollider2D.size == defaultSize || boxCollider2D.offset == defaultOffset) return;
             boxCollider2D.size = defaultSize;
             boxCollider2D.offset = defaultOffset;
             CalculateRaySpacing();
             return;
         }
-        boxCollider2D.size = new Vector2(boxCollider2D.size.x, crouchHeight);
-        boxCollider2D.offset = new Vector2(boxCollider2D.offset.x, -((GetComponent<MeshRenderer>().bounds.size.y / 2) - (boxCollider2D.size.y / 2)));
+        boxCollider2D.size = new Vector2(boxCollider2D.size.x, boxCollider2D.size.y / crouchHeight);
+        boxCollider2D.offset = new Vector2(boxCollider2D.offset.x, boxCollider2D.size.y / 2f);
         CalculateRaySpacing();
     }
 
@@ -227,8 +286,9 @@ public class PlayerController2D : EntityController2D
     }
 
 
-    float CalculateGravity => -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
 
 
-    float CalculateJumpVelocity => Mathf.Abs(gravity) * timeToJumpApex;
+
+
+
 }

@@ -427,6 +427,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfbdce31595c3b146a70239cb9cd1f0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  drawRays: 1
+  rayColor: {r: 0, g: 1, b: 0.028794289, a: 1}
   moveSpeed: 10
   sprintSpeed: 0
   accelerationTimeAirborne: 0.4
@@ -529,7 +531,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1.89}
+  m_Size: {x: 1, y: 1.83}
   m_EdgeRadius: 0
 --- !u!4 &759848756
 Transform:
@@ -663,6 +665,7 @@ GameObject:
   - component: {fileID: 1144343258}
   - component: {fileID: 1144343257}
   - component: {fileID: 1144343256}
+  - component: {fileID: 1144343259}
   m_Layer: 0
   m_Name: Platform (5)
   m_TagString: Untagged
@@ -756,6 +759,30 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1144343254}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1144343259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1144343254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adab981c95e770c478597b5d3a394478, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawRays: 1
+  rayColor: {r: 1, g: 0, b: 0, a: 1}
+  speed: 0
+  easeAmount: 0
+  cyclic: 1
+  localWaypoints:
+  - waypointColor: {r: 1, g: 0.687739, b: 0, a: 1}
+    waypointPosition: {x: -20, y: 0}
+    waitTime: 5
+  - waypointColor: {r: 0, g: 1, b: 0.0056221485, a: 1}
+    waypointPosition: {x: 0, y: 0}
+    waitTime: 5
 --- !u!1 &1184675193
 GameObject:
   m_ObjectHideFlags: 0
@@ -1028,13 +1055,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1588388115}
-  m_LocalRotation: {x: -0, y: -0, z: 0.8032848, w: 0.5955951}
-  m_LocalPosition: {x: 9.25, y: 2.56, z: 2.6210938}
+  m_LocalRotation: {x: -0, y: -0, z: 0.91096646, w: 0.41248047}
+  m_LocalPosition: {x: -3.57, y: -0.62, z: 2.6210938}
   m_LocalScale: {x: 3.596232, y: 1.527323, z: 1}
   m_Children: []
   m_Father: {fileID: 1365103089}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 106.89001}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 131.279}
 --- !u!61 &1588388117
 BoxCollider2D:
   m_ObjectHideFlags: 0

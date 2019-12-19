@@ -135,7 +135,7 @@ public class PlayerController2D : EntityController2D
         if (IsGrounded || IsCollidingAbove) vel.y = 0;
         Jump();
         vel.y += gravity * Time.deltaTime;
-        Move(vel * Time.deltaTime);
+        Move(vel * Time.deltaTime, DecendSlope);
     }
 
     private void SetAnimationVariables()
@@ -160,7 +160,7 @@ public class PlayerController2D : EntityController2D
     {
         Vector2 size = transform.localScale;
         size.x = Mathf.Sign(vel.x);
-        Debug.Log(Mathf.Sign(vel.x));
+
         transform.localScale = size;
         return (Mathf.Sign(vel.x) == -1) ? FacingDirection.Left : FacingDirection.Right;
     }
@@ -223,16 +223,17 @@ public class PlayerController2D : EntityController2D
     }
 
 
-    protected override void HorizontalCollisionBehaivour(int i,
-                                                         RaycastHit2D hit,
-                                                         float curDirection,
-                                                         ref float rayLength,
-                                                         ref Vector2 velocity)
+    protected override void HorizontalCollisionBehaivour(
+        int i, RaycastHit2D hit, float curDirection, ref float rayLength, ref Vector2 velocity)
     {
 
         float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
         if (i == 0 && slopeAngle <= maxClimbAngle)
         {
+            if(IsDecendingASlope){
+                IsDecendingASlope = false;
+                velocity = OldVelocity;
+            }
             float distanceToSlopeStart = 0;
             if (slopeAngle != PreviousSlopeAngle)
             {
@@ -256,18 +257,41 @@ public class PlayerController2D : EntityController2D
 
     }
 
-    protected override void VerticalCollisionBehaivour(int i,
-                                                       RaycastHit2D hit,
-                                                       float curDirection,
-                                                       ref float rayLength,
-                                                       ref Vector2 velocity)
+    protected override void VerticalCollisionBehaivour(
+         int i, RaycastHit2D hit, float curDirection, ref float rayLength, ref Vector2 velocity)
     {
         base.VerticalCollisionBehaivour(i, hit, curDirection, ref rayLength, ref velocity);
+
         if (IsClimbingASlope)
         {
             velocity.x = velocity.y / Mathf.Tan(CurrentSlopeAngle * Mathf.Deg2Rad) * Mathf.Sign(velocity.x);
         }
+        return;
 
+    }
+
+    protected override void VerticalCollisionBehaivour(
+        float curDirection, ref float rayLength, ref Vector2 velocity)
+    {
+        if (IsClimbingASlope)
+        {
+            float directionX = Mathf.Sign(velocity.x);
+            rayLength = Mathf.Abs(velocity.x) + skinWidth;
+
+            Vector2 rayOrigin = ((directionX == -1) ? rayCollisions.collisionOrigin.bottomLeft : rayCollisions.collisionOrigin.bottomRight) + Vector2.up * velocity.y;
+            RaycastHit2D[] hits = Physics2D.RaycastAll(rayOrigin, Vector2.right * directionX, rayLength);
+            foreach (var newHit in hits)
+            {
+                if (!newHit || newHit.transform.gameObject == gameObject) continue;
+                float slopeAngle = Vector2.Angle(newHit.normal, Vector2.up);
+                if (slopeAngle != CurrentSlopeAngle)
+                {
+                    velocity.x = (newHit.distance - skinWidth) * directionX;
+                    CurrentSlopeAngle = slopeAngle;
+                }
+                break;
+            }
+        }
     }
 
     private void ClimbSlope(ref Vector2 velocity, float slopeAngle)
@@ -283,6 +307,34 @@ public class PlayerController2D : EntityController2D
             CurrentSlopeAngle = slopeAngle;
         }
 
+    }
+
+    private void DecendSlope(ref Vector2 velocity)
+    {
+        float directionX = Mathf.Sign(velocity.x);
+        Vector2 rayOrigin = (directionX == -1) ? rayCollisions.collisionOrigin.bottomRight : rayCollisions.collisionOrigin.bottomLeft;
+
+        RaycastHit2D[] hits = Physics2D.RaycastAll(rayOrigin, -Vector2.up, Mathf.Infinity);
+        foreach (var hit in hits)
+        {
+            if (!hit || hit.transform.gameObject == gameObject) continue;
+            float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+
+            if (slopeAngle != 0 && slopeAngle <= maxDecendAngle)
+            {
+                if (Mathf.Sign(hit.normal.x) == directionX && hit.distance - skinWidth <= Mathf.Tan(slopeAngle * Mathf.Deg2Rad * Mathf.Abs(velocity.x)))
+                {
+                    float moveDistance = Mathf.Abs(velocity.x);
+                    float descendVelocityY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance;
+                    velocity.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance * Mathf.Sign(velocity.x);
+                    velocity.y -= descendVelocityY;
+                    CurrentSlopeAngle = slopeAngle;
+                    IsDecendingASlope = true;
+                    IsGrounded = true;
+                }
+            }
+            break;
+        }
     }
 
 

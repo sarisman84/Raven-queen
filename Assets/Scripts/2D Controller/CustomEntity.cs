@@ -5,11 +5,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void MoveBehaivour(ref Vector2 velocity);
 
 [RequireComponent(typeof(BoxCollider2D))]
 public class CustomEntity : MonoBehaviour
 {
-    RayCollisions2D rayCollisions;
+    [Header("Debug")]
+    public bool drawRays = true;
+    public Color rayColor = Color.red;
+    protected RayCollisions2D rayCollisions;
     protected BoxCollider2D boxCollider2D;
 
     protected const float skinWidth = RayCollisions2D.skinWidth;
@@ -32,7 +36,11 @@ public class CustomEntity : MonoBehaviour
     public float PreviousSlopeAngle { get => rayCollisions.collision.slopeAngleOld; }
 
 
-    protected void ResetInfo(){
+    public Vector2 OldVelocity { get => rayCollisions.collision.velocityOld; set => rayCollisions.collision.velocityOld = value; }
+
+
+    protected void ResetInfo()
+    {
         rayCollisions.collision.Reset();
     }
     protected virtual void Awake()
@@ -55,7 +63,22 @@ public class CustomEntity : MonoBehaviour
     {
         UpdateRaycastOrigins();
         ResetInfo();
+        rayCollisions.collision.velocityOld = velocity;
 
+        if (velocity.x != 0)
+            BaseHorizontalCollisions(ref velocity);
+        if (velocity.y != 0)
+            BaseVerticalCollisions(ref velocity);
+
+        transform.Translate(velocity);
+    }
+
+    public void Move(Vector2 velocity, MoveBehaivour method)
+    {
+        UpdateRaycastOrigins();
+        ResetInfo();
+
+        if (velocity.y < 0) method(ref velocity);
         if (velocity.x != 0)
             BaseHorizontalCollisions(ref velocity);
         if (velocity.y != 0)
@@ -67,7 +90,7 @@ public class CustomEntity : MonoBehaviour
 
 
     //The base behaivour of vertical collisions
-    private void BaseVerticalCollisions(ref Vector2 velocity)
+    protected void BaseVerticalCollisions(ref Vector2 velocity)
     {
         float directionY = Mathf.Sign(velocity.y);
         float rayLength = Mathf.Abs(velocity.y) + skinWidth;
@@ -76,7 +99,8 @@ public class CustomEntity : MonoBehaviour
         {
             Vector2 rayOrigin = (directionY == -1) ? rayCollisions.collisionOrigin.bottomLeft : rayCollisions.collisionOrigin.topLeft;
             rayOrigin += Vector2.right * (rayCollisions.verticalRaySpacing * i + velocity.x);
-            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
+            if (drawRays)
+                Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, rayColor);
             RaycastHit2D[] hits = Physics2D.RaycastAll(rayOrigin, Vector2.up * directionY, rayLength);
             foreach (var hit in hits)
             {
@@ -88,10 +112,11 @@ public class CustomEntity : MonoBehaviour
             }
 
         }
+        VerticalCollisionBehaivour(directionY, ref rayLength, ref velocity);
     }
 
 
-    private void BaseHorizontalCollisions(ref Vector2 velocity)
+    protected void BaseHorizontalCollisions(ref Vector2 velocity)
     {
         float directionX = Mathf.Sign(velocity.x);
         float rayLength = Mathf.Abs(velocity.x) + skinWidth;
@@ -100,7 +125,8 @@ public class CustomEntity : MonoBehaviour
         {
             Vector2 rayOrigin = (directionX == -1) ? rayCollisions.collisionOrigin.bottomLeft : rayCollisions.collisionOrigin.bottomRight;
             rayOrigin += Vector2.up * (rayCollisions.horizontalRaySpacing * i);
-            Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
+            if (drawRays)
+                Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, rayColor);
             RaycastHit2D[] hits = Physics2D.RaycastAll(rayOrigin, Vector2.right * directionX, rayLength);
             foreach (var hit in hits)
             {
@@ -138,14 +164,16 @@ public class CustomEntity : MonoBehaviour
     /// <param name="curDirection">The current vertical direction.</param>
     /// <param name="rayLength">How long the ray itself is.</param>
     /// <param name="velocity">The current velocity of the object.</param>
-    protected virtual void VerticalCollisionBehaivour(int i,
-                                                      RaycastHit2D hit,
-                                                      float curDirection,
-                                                      ref float rayLength,
-                                                      ref Vector2 velocity)
+    protected virtual void VerticalCollisionBehaivour(
+        int i, RaycastHit2D hit, float curDirection, ref float rayLength, ref Vector2 velocity)
     {
         velocity.y = (hit.distance - skinWidth) * curDirection;
         rayLength = hit.distance;
+    }
+
+    protected virtual void VerticalCollisionBehaivour(float curDirection, ref float rayLength, ref Vector2 velocity)
+    {
+
     }
 
     protected void UpdateRaycastOrigins()

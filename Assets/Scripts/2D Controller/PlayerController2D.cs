@@ -38,12 +38,18 @@ public class PlayerController2D : EntityController2D
     public float maxDecendAngle = 70f;
 
 
-    [Header("Player Input")]
+    [Header("Main Player Input")]
     public InputAction horizontalInput;
     public InputAction jumpInput, crouchInput;
 
-    [Header("Player Model")]
+    [Header("Extra Player Inputs")]
+    public InputInformation[] inputArray;
+
+    [Header("Model")]
     public Transform playerModel;
+
+    [Header("Unity Events")]
+    public EventInformation[] eventArray;
 
     float CalculateGravity => -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
     float CalculateJumpVelocity => Mathf.Abs(gravity) * timeToJumpApex;
@@ -106,12 +112,20 @@ public class PlayerController2D : EntityController2D
                 horizontalInput.Enable();
                 jumpInput.Enable();
                 crouchInput.Enable();
+                foreach (var item in inputArray)
+                {
+                    item.inputAction.Enable();
+                }
                 break;
 
             case InputControl.Disable:
                 horizontalInput.Disable();
                 jumpInput.Disable();
                 crouchInput.Disable();
+                foreach (var item in inputArray)
+                {
+                    item.inputAction.Disable();
+                }
                 break;
         }
 
@@ -131,11 +145,26 @@ public class PlayerController2D : EntityController2D
         //Change Facing Direction
         direction = ChangeFacingDirection();
         SetAnimationVariables();
-
+        EventCallbacks(this);
         if (IsGrounded || IsCollidingAbove) vel.y = 0;
         Jump();
         vel.y += gravity * Time.deltaTime;
         Move(vel * Time.deltaTime, DecendSlope);
+    }
+
+    private void EventCallbacks(PlayerController2D playerController2D)
+    {
+        if (eventArray.Length == 0 || eventArray == null) return;
+        if (inputArray.Length == 0 || inputArray == null) return;
+
+        for (int i = 0; i < eventArray.Length; i++)
+        {
+            InputAction action = Array.Find(inputArray, p => eventArray[i].eventName.ToLower().Contains(p.inputName.ToLower())).inputAction;
+            if (action != null && action.ReadValue<float>() == 1)
+                eventArray[i].Event.Invoke();
+        }
+
+
     }
 
     private void SetAnimationVariables()
@@ -230,7 +259,8 @@ public class PlayerController2D : EntityController2D
         float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
         if (i == 0 && slopeAngle <= maxClimbAngle)
         {
-            if(IsDecendingASlope){
+            if (IsDecendingASlope)
+            {
                 IsDecendingASlope = false;
                 velocity = OldVelocity;
             }
@@ -338,7 +368,20 @@ public class PlayerController2D : EntityController2D
     }
 
 
+    [System.Serializable]
+    public struct EventInformation
+    {
+        public string eventName;
+        public UnityEvent Event;
 
+    }
+
+    [System.Serializable]
+    public struct InputInformation
+    {
+        public string inputName;
+        public InputAction inputAction;
+    }
 
 
 

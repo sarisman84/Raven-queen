@@ -408,6 +408,7 @@ GameObject:
   - component: {fileID: 759848756}
   - component: {fileID: 759848753}
   - component: {fileID: 759848752}
+  - component: {fileID: 759848754}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -506,7 +507,45 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Crouch Input
       m_Flags: 0
+  inputArray:
+  - inputName: Attack
+    inputAction:
+      m_Name: Input
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: e7b4942a-0feb-4ff7-8b69-c9db8d5ab07b
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings:
+      - m_Name: 
+        m_Id: 869dad47-cc21-4066-9bf4-59fa5574f370
+        m_Path: <Keyboard>/rightShift
+        m_Interactions: 
+        m_Processors: 
+        m_Groups: 
+        m_Action: Input
+        m_Flags: 0
   playerModel: {fileID: 1735052627}
+  eventArray:
+  - eventName: Attack
+    Event:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 759848754}
+          m_MethodName: DebugTest
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventName: Test
+    Event:
+      m_PersistentCalls:
+        m_Calls: []
 --- !u!61 &759848753
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -533,6 +572,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1.83}
   m_EdgeRadius: 0
+--- !u!114 &759848754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 759848751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddc91ba8b2aa10b43bfcf685cef079f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &759848756
 Transform:
   m_ObjectHideFlags: 0

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TestDummy : MonoBehaviour, IDamageable {
     public void TakeDamage (float attackDamage, GameObject owner) {
-        Debug.Log ($"Taken {attackDamage} damage by {owner.name}.");
+        Debug.Log ($"{gameObject.name} has taken {attackDamage} damage by {owner.name}.");
     }
 
 }

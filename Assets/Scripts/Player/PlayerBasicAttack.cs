@@ -18,19 +18,26 @@ public class PlayerBasicAttack : MonoBehaviour {
     public AttackBehaivour OnDestructable_CustomBehaivour { private get; set; }
     #endregion
 
+    public Animator anim;
     public Vector2 collisionPos, collisionSize = new Vector2 (1, 2);
     public float attackSpeed = 0.5f;
     public float attackDamage = 1f;
     float time;
 
     private void Update () {
-        AttackInput = Keyboard.current.spaceKey.isPressed;
+
     }
     private void FixedUpdate () {
         time += Time.deltaTime;
         time = Mathf.Clamp (time, 0, attackSpeed);
-        if (!AttackInput || time != attackSpeed) return;
-        Collider2D[] entitiesFound = Physics2D.OverlapBoxAll (collisionPos, collisionSize, 0);
+
+    }
+
+    public void Attack () {
+        if (time != attackSpeed) return;
+        anim.SetTrigger ("IsAttacking");
+        Debug.Log ("Is attacking!");
+        Collider2D[] entitiesFound = Physics2D.OverlapBoxAll (RuntimePosition, collisionSize, 0);
         DamageEntities (entitiesFound);
         time = 0;
     }
@@ -43,11 +50,14 @@ public class PlayerBasicAttack : MonoBehaviour {
             IDestructable obj = entitiesFound[e].GetComponent<IDestructable> ();
 
             if (entity == null) continue;
-            OnDamageable_CustomBehaviour (entitiesFound[e]);
+            if (OnDamageable_CustomBehaviour != null)
+                OnDamageable_CustomBehaviour (entitiesFound[e]);
+
             entity.TakeDamage (attackDamage, gameObject);
 
             if (obj == null) continue;
-            OnDestructable_CustomBehaivour (entitiesFound[e]);
+            if (OnDestructable_CustomBehaivour != null)
+                OnDestructable_CustomBehaivour (entitiesFound[e]);
             obj.Destroy ();
             continue;
 
@@ -56,7 +66,13 @@ public class PlayerBasicAttack : MonoBehaviour {
 
     private void OnDrawGizmosSelected () {
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube (collisionPos, collisionSize);
+        Gizmos.DrawWireCube (RuntimePosition, collisionSize);
+    }
+
+    Vector2 RuntimePosition {
+        get {
+            return new Vector2 (collisionPos.x * Mathf.Sign (transform.localScale.x), collisionPos.y) + new Vector2 (transform.position.x, transform.position.y);
+        }
     }
 
 }

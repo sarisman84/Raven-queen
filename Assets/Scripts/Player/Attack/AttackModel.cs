@@ -9,11 +9,11 @@ public class AttackModel : MonoBehaviour {
     public InputAction attackButton;
     public Attack info;
 
-    private void Awake () {
-        info.attackBehaivour = AttackMethod;
-        if (attackButton == null) throw new NullReferenceException ($"No button is set in the inspector -> {gameObject.name}");
-        attackButton.Enable ();
-    }
+    // private void Awake () {
+    //     info.Trigger = AttackMethod;
+    //     if (attackButton == null) throw new NullReferenceException ($"No button is set in the inspector -> {gameObject.name}");
+    //     attackButton.Enable ();
+    // }
 
     private void AttackMethod (Attack info) {
 
@@ -21,7 +21,7 @@ public class AttackModel : MonoBehaviour {
 
     }
 
-    private void Update () {
-        if (attackButton.triggered) info.attackBehaivour (info);
-    }
+    // private void Update () {
+    //     if (attackButton.triggered) info.Trigger (info);
+    // }
 }

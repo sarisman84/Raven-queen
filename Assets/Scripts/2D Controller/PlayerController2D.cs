@@ -52,6 +52,8 @@ public class PlayerController2D : EntityController2D {
     FacingDirection direction;
     public FacingDirection CurrentFacingDirection => direction;
 
+    public Vector2 LookDirection => new Vector2 (Mathf.Sign (vel.x), 1);
+
     protected Vector2 vel;
 
     float jumpVelocity = 8;

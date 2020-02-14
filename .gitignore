@@ -61,3 +61,8 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+Assets/Joel.unity
+Assets/Joel.unity.meta
+Assets/Scripts/Scenes/TestingScene_Spyro.unity.meta
+Assets/Scripts/Scenes/TestingScene_Spyro.unity~HEAD.meta
+Assets/Scripts/Scenes/TestingScene_Spyro.unity~Spyro's-Workplace.meta
